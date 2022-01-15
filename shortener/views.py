@@ -92,3 +92,7 @@ def list_view(request):
     paginator = Paginator(users, 10)
     users = paginator.get_page(page)
     return render(request, "boards.html", {"users": users})
+
+
+def url_list(request):
+    return render(request, "url_list.html")
