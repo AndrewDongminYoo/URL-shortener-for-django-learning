@@ -24,6 +24,7 @@
     <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
     <meta name="author" content="Creative Tim"/>
     <title>{% block title %}{% endblock %} | Shrinkers</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <!-- Icons -->
@@ -35,6 +36,15 @@
     <link rel="stylesheet" href="{% static 'assets/vendor/sweetalert2/dist/sweetalert2.min.css' %}">
     <!-- Argon CSS -->
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" type="text/css">
+    <!-- Core -->
+    <script src="{% static 'assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/js-cookie/js.cookie.js' %}"></script>
+    <script src="{% static 'assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js' %}"></script>
+    <!-- Optional JS -->
+    <script src="{% static 'assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/chart.js/dist/Chart.extension.js' %}"></script>
 </head>
 
 <body>
@@ -76,15 +86,6 @@
     </div>
 </div>
 <!-- Argon Scripts -->
-<!-- Core -->
-<script src="{% static 'assets/vendor/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'assets/vendor/js-cookie/js.cookie.js' %}"></script>
-<script src="{% static 'assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js' %}"></script>
-<script src="{% static 'assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js' %}"></script>
-<!-- Optional JS -->
-<script src="{% static 'assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
-<script src="{% static 'assets/vendor/chart.js/dist/Chart.extension.js' %}"></script>
 <!-- Argon JS -->
 <script src="{% static 'assets/js/dashboard.js' %}?v=1.2.0"></script>
 <!-- Demo JS - remove this in your project -->
