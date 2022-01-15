@@ -21,7 +21,9 @@ class RegisterForm(UserCreationForm):
 
 class LoginForm(forms.Form):
     email = forms.CharField(
-        max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "이메일"})
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "이메일"})
     )
     password = forms.CharField(
         max_length=30,

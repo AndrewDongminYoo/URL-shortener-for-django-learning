@@ -3,7 +3,7 @@ from django.http.response import JsonResponse
 from shortener.models import Users
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
-from shortener.forms import RegisterForm
+from shortener.forms import RegisterForm, LoginForm
 from django.contrib.auth import login, authenticate, logout
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -60,20 +60,23 @@ def login_view(request):
     if request.method == "POST":
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get("username")
+            email = form.cleaned_data.get("email")
             raw_password = form.cleaned_data.get("password")
-            user = authenticate(username=username, password=raw_password)
-            if user is not None:
-                login(request, user)
-                is_ok = True
-        else:
-            msg = "올바른 유저ID와 패스워드를 입력하세요."
+            remember_me = form.cleaned_data.get("remember_me")
+            try:
+                user = Users.objects.get(email=email)
+            except Users.DoesNotExist:
+                msg = "올바른 유저 아이디와 패스워드를 입력하세요."
+            else:
+                if user.check_password(raw_password):
+                    msg = None
+                    login(request, user)
+                    is_ok = True
+                    request.session["remember_me"] = remember_me
     else:
-        form = AuthenticationForm()
-
-    for visible in form.visible_fields():
-        visible.field.widget.attrs["placeholder"] = "유저ID" if visible.name == "username" else "패스워드"
-        visible.field.widget.attrs["class"] = "form-control"
+        msg = None
+        form = LoginForm()
+        print("REMEMBER ME:", request.session.get("remember_me"))
     return render(request, "login.html", {"form": form, "msg": msg, "is_ok": is_ok})
 
 
@@ -88,5 +91,4 @@ def list_view(request):
     users = Users.objects.all().order_by("-id")
     paginator = Paginator(users, 10)
     users = paginator.get_page(page)
-
     return render(request, "boards.html", {"users": users})
