@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load custom_tags %}
 {% block content %}
 <h2>유저 리스트</h2>
 <h4>{% if msg %}{{ msg }}{% endif %}</h4>
@@ -15,7 +16,7 @@
     {% for u in users %}
         <tr>
             <th scope="row">{{ u.username }}</th>
-            <td>{{ u.email }}</td>
+            <td>{{ u.email|email_masker }}</td>
             <td>{{ u.date_joined }}</td>
             <td>{{ u.pay_plan.name }}</td>
         </tr>
