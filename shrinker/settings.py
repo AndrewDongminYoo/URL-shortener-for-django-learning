@@ -38,11 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "shortener.apps.ShortenerConfig",
     "debug_toolbar",  # Django Debug Toolbar
+    "django_seed",  # Django Mock
 ]
 
 INTERNAL_IPS = [
     "127.0.0.1",  # Django Debug Toolbar
 ]
+
+LOGIN_URL = "/login"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
