@@ -58,7 +58,7 @@ def login_view(request):
     msg = None
     is_ok = False
     if request.method == "POST":
-        form = AuthenticationForm(request, request.POST)
+        form = LoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get("email")
             raw_password = form.cleaned_data.get("password")

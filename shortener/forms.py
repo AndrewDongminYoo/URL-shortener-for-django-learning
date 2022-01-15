@@ -23,12 +23,20 @@ class LoginForm(forms.Form):
     email = forms.CharField(
         max_length=100,
         required=True,
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "이메일"})
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "이메일",
+            "autocomplete": "username",
+        })
     )
     password = forms.CharField(
         max_length=30,
         required=True,
-        widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "패스워드"}),
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control",
+            "placeholder": "패스워드",
+            "autocomplete": "current-password",
+        }),
     )
     remember_me = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={"class": "custom-control-input", "id": "_loginRememberMe"}),
