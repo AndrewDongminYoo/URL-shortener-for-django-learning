@@ -1,4 +1,5 @@
 """shrinker URL Configuration
+
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
 Examples:
@@ -12,19 +13,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from shortener.views import index, get_user, register, login_view, logout_view, list_view
+import debug_toolbar
+from django.conf.urls import include
+from shortener.views import index, get_user, list_view, register, login_view, logout_view
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('__debug__/', include('debug_toolbar.urls')),
-
+    path("__debug__/", include(debug_toolbar.urls)),  # Django Debug Tool
     path("", index, name="index"),
-    path("get_user/<int:user_id>", get_user),
-    path("list", list_view, name="list_view"),
-
     path("register", register, name="register"),
     path("login", login_view, name="login"),
     path("logout", logout_view, name="logout"),
+    path("list", list_view, name="list_view"),
+    path("get_user/<int:user_id>", get_user),
 ]

@@ -12,11 +12,3 @@ def email_masker(value):
     username = email_split[0]
     covered = re.sub(r"\w", "*", email_split[1])
     return username + "@" + covered
-
-
-@register.simple_tag(name="test_tags", takes_context=True)
-def test_tags(context):
-    for c in context:
-        print(c)
-    tag_html = "<span class='badge badge-primary'>테스트 태그</span>"
-    return mark_safe(tag_html)
