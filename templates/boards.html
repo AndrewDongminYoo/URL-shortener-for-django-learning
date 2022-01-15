@@ -9,11 +9,14 @@
 <h4>{% if msg %}{{ msg }}{% endif %}</h4>
 <table>
     <thead>
-    <tr>유저이름</tr>
-    <tr>이메일</tr>
-    <tr>가입일</tr>
-    <tr>페이플랜</tr>
+    <tr>
+        <th>유저이름</th>
+        <th>이메일</th>
+        <th>가입일</th>
+        <th>페이플랜</th>
+    </tr>
     </thead>
+    <tbody>
     {% for u in users %}
         <tr>
             <td>{{ u.username }}</td>
@@ -22,9 +25,10 @@
             <td>{{ u.pay_plan.name }}</td>
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 <nav>
-    <ul>
+    <ul style="list-style-type: none; display: flex">
         {% if users.has_previous %}
             <li>
                 <a href="?p={{ users.previous_page_number }}">이전으로</a>
