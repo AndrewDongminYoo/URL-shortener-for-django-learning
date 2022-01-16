@@ -85,10 +85,6 @@ DATABASES = {
         'PASSWORD': 'rew748596',
         'HOST': '34.64.240.254',
         'PORT': '5432',
-        "OPTIONS": {
-            "autocommit": True,
-            "charset": "utf8mb4"
-        }
     }
 }
 
