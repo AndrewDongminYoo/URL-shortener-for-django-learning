@@ -13,22 +13,11 @@ Including another URL conf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import include
-from django.contrib import admin
+from shortener.urls.views import url_list, url_create, url_change
 from django.urls import path
 
-from shortener.views import index
-from shrinker.settings import DEBUG
-
 urlpatterns = [
-    path("", index, name="index"),
-    path("admin/", admin.site.urls),
-    path("users/", include("shortener.users.urls")),
-    path("urls/", include("shortener.urls.urls")),
+    path("urls", url_list, name="url_list"),
+    path("urls/create", url_create, name="url_create"),
+    path("urls/<str:action>/<int:url_id>", url_change, name="url_change"),
 ]
-
-if DEBUG:
-    import debug_toolbar
-    urlpatterns += [
-        path("__debug__/", include(debug_toolbar.urls)),  # Django Debug Tool
-    ]
