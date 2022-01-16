@@ -1,8 +1,11 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from rest_framework.generics import get_object_or_404
+
 from shortener.models import ShortenedUrls
 from shortener.urls.forms import UrlCreateForm
+from shortener.users.utils import url_count_changer
 
 # Create your views here.
 
@@ -37,7 +40,12 @@ def url_change(request, action, url_id):
             if url_data.first().creator_id == request.user.id:
                 if action == "delete":
                     msg = f"{url_data.first().nick_name} 삭제 완료!"
-                    url_data.delete()
+                    try:
+                        url_data.delete()
+                    except Exception as e:
+                        print(e)
+                    else:
+                        url_count_changer(request=request, is_increase=False)
                     messages.add_message(request, messages.INFO, msg)
                 elif action == "update":
                     msg = f"{url_data.first().nick_name} 수정 완료!"
@@ -49,3 +57,15 @@ def url_change(request, action, url_id):
         form = UrlCreateForm(instance=url_data)
         return render(request, "url_create.html", {"form": form, "is_update": True})
     return redirect("url_list")
+
+
+def url_redirect(request, prefix, url):
+    print(prefix, url)
+    get_url = get_object_or_404(ShortenedUrls, prefix=prefix, shortened_url=url)
+    is_permanent = False
+    target = get_url.target_url
+    if get_url.creator.organization:
+        is_permanent = True
+    if not target.startswith("https://") and not target.startswith("http://"):
+        target = "https://" + get_url.target_url
+    return redirect(target, permanent=is_permanent)

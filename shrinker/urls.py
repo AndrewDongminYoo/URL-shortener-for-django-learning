@@ -17,6 +17,7 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 
+from shortener.urls.views import url_redirect
 from shortener.views import index
 from shrinker.settings import DEBUG
 
@@ -25,6 +26,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("users/", include("shortener.users.urls")),
     path("urls/", include("shortener.urls.urls")),
+    path("<str:prefix>/<str:url>", url_redirect),
 ]
 
 if DEBUG:

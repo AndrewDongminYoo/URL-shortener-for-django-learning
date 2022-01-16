@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User as U
 from django.contrib.auth.models import AbstractUser
 
+from shortener.urls.utils import rand_letter, rand_string
+
 
 class TimeStampedModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
@@ -58,3 +60,8 @@ class ShortenedUrls(TimeStampedModel):
     shortened_url = models.CharField(max_length=6, default=rand_string)
     created_via = models.CharField(max_length=8, choices=UrlCreatedVia.choices, default=UrlCreatedVia.WEBSITE)
     expired_at = models.DateTimeField(null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["prefix", "shortened_url"])
+        ]
