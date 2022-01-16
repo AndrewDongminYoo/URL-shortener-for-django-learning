@@ -1,4 +1,4 @@
-from shortener.models import ShortenedUrls, Users
+from shortener.models import Users
 from django.db.models import F
 
 

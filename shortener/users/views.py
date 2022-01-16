@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
-from shortener.forms import RegisterForm, LoginForm
+from shortener.users.forms import RegisterForm, LoginForm
 from shortener.models import Users
 
 # Create your views here.
