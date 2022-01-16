@@ -96,7 +96,7 @@ def list_view(request):
 
 def url_list(request):
     url_array = ShortenedUrls.objects.order_by("-create_at").all()
-    return render(request, "url_list.html", {"list": url_array})
+    return render(request, "url_list.html", {"url_list": url_array})
 
 
 @login_required
