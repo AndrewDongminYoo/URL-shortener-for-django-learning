@@ -7,6 +7,14 @@ import random
 # Create your models here.
 
 
+def rand_letter():
+    return random.choice(string.ascii_letters).lower()
+
+
+def rand_string():
+    return "".join([random.choice(string.digits + string.ascii_letters) for _ in range(6)])
+
+
 class TimeStampedModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -35,11 +43,7 @@ class Organization(TimeStampedModel):
 class Users(AbstractUser):
     full_name = models.CharField(max_length=100, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.DO_NOTHING, null=True)
-
-
-def rand_string():
-    str_pool = string.digits + string.ascii_letters
-    return "".join([random.choice(str_pool) for _ in range(6)])
+    url_count = models.IntegerField(default=0)
 
 
 class EmailVerification(TimeStampedModel):
@@ -60,7 +64,7 @@ class ShortenedUrls(TimeStampedModel):
         TELEGRAM = "telegram"
     nick_name = models.CharField(max_length=100)
     category = models.ForeignKey(Categories, on_delete=models.DO_NOTHING, null=True)
-    prefix = models.CharField(max_length=50)
+    prefix = models.CharField(max_length=50, default=rand_letter)
     creator = models.ForeignKey(Users, on_delete=models.CASCADE)
     target_url = models.CharField(max_length=2000)
     shortened_url = models.CharField(max_length=6, default=rand_string)

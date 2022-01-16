@@ -8,7 +8,7 @@ from shortener.forms import UrlCreateForm
 
 
 def url_list(request):
-    url_array = ShortenedUrls.objects.order_by("-create_at").all()
+    url_array = ShortenedUrls.objects.order_by("-created_at").all()
     return render(request, "url_list.html", {"url_list": url_array})
 
 
@@ -34,7 +34,7 @@ def url_change(request, action, url_id):
     if request.method == "POST":
         url_data = ShortenedUrls.objects.filter(id=url_id)
         if url_data.exists():
-            if url_data.first().created_by_id == request.user.id:
+            if url_data.first().creator_id == request.user.id:
                 if action == "delete":
                     msg = f"{url_data.first().nick_name} 삭제 완료!"
                     url_data.delete()
