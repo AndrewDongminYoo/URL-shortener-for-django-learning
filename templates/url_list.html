@@ -32,10 +32,10 @@
                             <tr>
                                 <th scope="row">{{ url.nick_name }}</th>
                                 <td>{{ url.target_url }}</td>
-                                <td><a href="/{{ l.prefix }}/{{ l.shortened_url }}" target="_blank">
-                                    {{ request.get_host }}/{{ l.prefix }}/{{ l.shortened_url }}</a>
+                                <td><a href="/{{ url.prefix }}/{{ url.shortened_url }}" target="_blank">
+                                    {{ request.get_host }}/{{ url.prefix }}/{{ url.shortened_url }}</a>
                                 </td>
-                                <td>{{ l.create_via }}</td>
+                                <td>{{ url.create_via }}</td>
                                 <td>{{ url.create_at }}</td>
                                 <td>
                                     <form action="/urls/delete/{{ url.id }}" method="POST">
