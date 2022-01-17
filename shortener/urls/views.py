@@ -2,8 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from rest_framework.generics import get_object_or_404
-
-from shortener.models import ShortenedUrls
+from shortener.models import ShortenedUrls, Statistic
 from shortener.urls.forms import UrlCreateForm
 from shortener.users.utils import url_count_changer
 
@@ -60,7 +59,9 @@ def url_change(request, action, url_id):
 
 
 def url_redirect(request, prefix, url):
-    print(prefix, url)
+    was_limited = getattr(request, "limited", False)
+    if was_limited:
+        return redirect("index")
     get_url = get_object_or_404(ShortenedUrls, prefix=prefix, shortened_url=url)
     is_permanent = False
     target = get_url.target_url
@@ -68,4 +69,6 @@ def url_redirect(request, prefix, url):
         is_permanent = True
     if not target.startswith("https://") and not target.startswith("http://"):
         target = "https://" + get_url.target_url
+    history = Statistic()
+    history.record(request, get_url)
     return redirect(target, permanent=is_permanent)

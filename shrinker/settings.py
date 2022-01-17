@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "shortener.apps.ShortenerConfig",
+    "django_user_agents",
 ]
 
 LOGIN_URL = "/login"
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_user_agents.middleware.UserAgentMiddleware",
 ]
 
 ROOT_URLCONF = "shrinker.urls"
@@ -118,6 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+GEOIP_PATH = os.path.join(BASE_DIR, "geolite2")
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
