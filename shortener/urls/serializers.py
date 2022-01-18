@@ -14,4 +14,6 @@ class UrlListSerializer(ModelSerializer):
 
     class Meta:
         model = ShortenedUrls
-        fields = ("id", "nick_name", "prefix", "shortened_url", "creator", "click", "created_via", "expired_at", "created_at")
+        # fields = ("id", "nick_name", "prefix", "shortened_url", "creator", "click", "created_via", "updated_at")
+        # exclude = ("created_at", "target_url", "expired_at", "category")  # fields or exclude
+        fields = "__all__"
