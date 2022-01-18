@@ -35,8 +35,8 @@
                                 <td><a href="/{{ url.prefix }}/{{ url.shortened_url }}" target="_blank">
                                     {{ request.get_host }}/{{ url.prefix }}/{{ url.shortened_url }}</a>
                                 </td>
-                                <td>{{ url.create_via }}</td>
-                                <td>{{ url.create_at }}</td>
+                                <td>{{ url.created_via }}</td>
+                                <td>{{ url.created_at }}</td>
                                 <td>
                                     <form action="/urls/delete/{{ url.id }}" method="POST">
                                         {% csrf_token %}

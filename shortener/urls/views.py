@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -5,13 +6,20 @@ from rest_framework.generics import get_object_or_404
 from shortener.models import ShortenedUrls, Statistic
 from shortener.urls.forms import UrlCreateForm
 from shortener.users.utils import url_count_changer
+from ratelimit.decorators import ratelimit
 
 # Create your views here.
 
 
 def url_list(request):
-    url_array = ShortenedUrls.objects.order_by("-created_at").all()
-    return render(request, "url_list.html", {"url_list": url_array})
+    a = (
+        Statistic.objects.filter(shortened_url_id=5)
+        .values("custom_params__email_id")
+        .annotate(t=Count("custom_params__email_id"))
+    )
+    print(a)
+    get_list = ShortenedUrls.objects.order_by("-created_at").all()
+    return render(request, "url_list.html", {"url_list": get_list})
 
 
 @login_required
@@ -28,7 +36,7 @@ def url_create(request):
             form = UrlCreateForm()
     else:
         form = UrlCreateForm()
-    return render(request, "url_create.html", {"msg": msg, "form": form})
+    return render(request, "url_create.html", {"form": form})
 
 
 @login_required
@@ -58,6 +66,7 @@ def url_change(request, action, url_id):
     return redirect("url_list")
 
 
+@ratelimit(key="ip", rate="3/m")
 def url_redirect(request, prefix, url):
     was_limited = getattr(request, "limited", False)
     if was_limited:
@@ -69,6 +78,7 @@ def url_redirect(request, prefix, url):
         is_permanent = True
     if not target.startswith("https://") and not target.startswith("http://"):
         target = "https://" + get_url.target_url
+    custom_params = request.GET.dict() if request.GET.dict() else None
     history = Statistic()
-    history.record(request, get_url)
+    history.record(request, get_url, custom_params)
     return redirect(target, permanent=is_permanent)
