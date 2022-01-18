@@ -20,12 +20,14 @@ from django.urls import path
 from shortener.urls.views import url_redirect
 from shortener.views import index
 from shrinker.settings import DEBUG
+from shortener.urls.urls import router as url_router
 
 urlpatterns = [
     path("", index, name="index"),
     path("admin/", admin.site.urls),
     path("users/", include("shortener.users.urls")),
     path("urls/", include("shortener.urls.urls")),
+    path("api/", include(url_router.urls)),
     path("<str:prefix>/<str:url>", url_redirect),
 ]
 
