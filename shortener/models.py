@@ -69,8 +69,11 @@ class ShortenedUrls(TimeStampedModel):
             models.Index(fields=["prefix", "shortened_url"])
         ]
 
-    def clicked(self):
-        self.click += 1
+    def clicked(self, positive=True):
+        if positive:
+            self.click += 1
+        else:
+            self.click -= 1
         self.save()
         return self
 
