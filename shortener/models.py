@@ -35,6 +35,7 @@ class Users(AbstractUser):
     full_name = models.CharField(max_length=100, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.DO_NOTHING, null=True)
     url_count = models.IntegerField(default=0)
+    telegram_username = models.CharField(max_length=50, default="")
 
 
 class EmailVerification(TimeStampedModel):
