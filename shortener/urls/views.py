@@ -12,8 +12,7 @@ from ratelimit.decorators import ratelimit
 
 
 def url_list(request):
-    get_list = ShortenedUrls.objects.order_by("-created_at").filter(creator_id=request.user.id).all()
-    return render(request, "url_list.html", {"url_list": get_list})
+    return render(request, "url_list.html")
 
 
 @login_required

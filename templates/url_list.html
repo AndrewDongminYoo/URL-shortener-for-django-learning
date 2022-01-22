@@ -123,14 +123,13 @@
                             }
                         }
                     }
-                },
-                filters: {
-                    addressAssembler: function (value, arg) {
-                        document.URL.toString()
-                        const url = new URL("", document.URL, false);
-                        const host = url.host;
-                        return `${host}/${value}/${arg}`;
-                    }
+                }
+            },
+            filters: {
+                addressAssembler: function (v, arg) {
+                    const url = new URL("", document.URL, false);
+                    const host = url.host;
+                    return `${host}/${v}/${arg}`;
                 }
             }
         })
