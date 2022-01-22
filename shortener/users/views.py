@@ -61,10 +61,13 @@ def login_view(request):
                     login(request, user)
                     is_ok = True
                     request.session["remember_me"] = remember_me
+                    return redirect("index")
     else:
         msg = None
         form = LoginForm()
         print("REMEMBER ME:", request.session.get("remember_me"))
+        if request.user.is_authenticated:
+            return redirect("index")
     return render(request, "login.html", {"form": form, "msg": msg, "is_ok": is_ok})
 
 
