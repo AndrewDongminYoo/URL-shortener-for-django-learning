@@ -95,7 +95,7 @@
                                 <img alt="Image placeholder" src="{% static 'assets/img/theme/team-4.jpg' %}">
                             </span>
                             <div class="media-body ml-2 d-none d-lg-block">
-                                <span class="mb-0 text-sm font-weight-bold">Ryan Lee</span>
+                                <span class="mb-0 text-sm font-weight-bold">{{ request.user.email }}</span>
                             </div>
                         </div>
                     </a>
@@ -113,7 +113,7 @@
                         </a>
                         <div class="dropdown-divider">
                         </div>
-                        <a href="#" class="dropdown-item">
+                        <a href="{% url 'logout' %}" class="dropdown-item">
                             <i class="ni ni-user-run"></i>
                             <span>로그아웃</span>
                         </a>
