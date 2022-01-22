@@ -5,8 +5,7 @@
 {% block sub_breadscumb_highlight %}URL List{% endblock %}
 {% block sub_breadscumb %}URL 리스트{% endblock %}
 {% block content %}
-
-    <div class="row">
+    <div class="row" id="vue-div" xmlns:v-on="http://www.w3.org/1999/xhtml">
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header border-0">
@@ -28,29 +27,25 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for url in url_list %}
-                            <tr>
-                                <th scope="row">{{ url.nick_name }}</th>
-                                <td>{{ url.target_url }}</td>
-                                <td><a href="/{{ url.prefix }}/{{ url.shortened_url }}" target="_blank">
-                                    {{ request.get_host }}/{{ url.prefix }}/{{ url.shortened_url }}</a>
-                                </td>
-                                <td>{{ url.created_via }}</td>
-                                <td>{{ url.created_at }}</td>
+                            <tr v-for="url in urlLists">
+                                <th scope="row">[[ url.nick_name ]]</th>
+                                <td>[[ url.target_url ]]</td>
                                 <td>
-                                    <form action="/urls/delete/{{ url.id }}" method="POST">
-                                        {% csrf_token %}
-                                        <a href="/urls/update/{{ url.id }}" class="btn btn-sm btn-primary">
-                                            수정
-                                        </a>
-                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('정말 삭제 하시겠습니까?');">
-                                            삭제
-                                        </button>
-                                    </form>
+                                    <a :href="'/'+url.prefix+'/'+url.shortened_url" target="_blank">
+                                    [[ url.prefix | addressAssembler(url.shortened_url) ]]</a>
+                                </td>
+                                <td>[[ url.created_via ]]</td>
+                                <td>[[ url.created_at ]]</td>
+                                <td>
+                                    <button v-on:click="console.log('수정')" class="btn btn-sm btn-primary">
+                                        수정
+                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            v-on:click="deleteUrl(url.id)">
+                                        삭제
+                                    </button>
                                 </td>
                             </tr>
-                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -78,4 +73,66 @@
             $('.toast').toast('show');
         </script>
     {% endif %}
+    <script>
+        let vm = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#vue-div',
+            data: {
+                newUrlName: null,
+                newUrlTarget: null,
+                urlLists: [],
+            },
+            mounted() {
+                this.getUrlList();
+            },
+            methods: {
+                getUrlList: function () {
+                    $("#vue-div").LoadingOverlay("show");
+                    axios.get(`/api/urls/`,)
+                        .then(function (response) {
+                            vm.urlLists = response.data
+                        })
+                        .catch(function (e) {
+                        })
+                        .finally(function () {
+                            $("#vue-div").LoadingOverlay("hide")
+                        });
+                },
+                deleteUrl: function (urlId) {
+                    const c = confirm('정말 삭제 하시겠습니까?');
+                    if (!c) return;
+                    axios.delete(`/api/urls/${urlId}`, {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+                        .then(function (response) {
+                        })
+                        .catch(function (e) {
+                        })
+                        .finally(function () {
+                            vm.getUrlList()
+                        });
+                },
+                getCookie: function (name) {
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        const cookies = document.cookie.split(';');
+                        for (let i = 0; i < cookies.length; i++) {
+                            let cookie = cookies[i].trim();
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                },
+                filters: {
+                    addressAssembler: function (value, arg) {
+                        document.URL.toString()
+                        const url = new URL("", document.URL, false);
+                        const host = url.host;
+                        return `${host}/${value}/${arg}`;
+                    }
+                }
+            }
+        })
+    </script>
 {% endblock %}
