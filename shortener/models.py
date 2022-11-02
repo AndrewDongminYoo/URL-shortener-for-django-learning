@@ -1,9 +1,13 @@
+import string
+import random
 from typing import Dict
+
 from django.db import models
 from django.contrib.auth.models import User as U
-from django.contrib.auth.models import AbstractUser
-from shortener.model_utils import location_finder, dict_slice, dict_filter
-from shortener.urls.utils import rand_letter, rand_string
+from django.db.models.base import Model
+from shortener.model_utils import dict_filter, dict_slice, location_finder
+
+# Create your models here.
 
 
 class TimeStampedModel(models.Model):
@@ -26,16 +30,18 @@ class Organization(TimeStampedModel):
         MANUFACTURING = "manufacturing"
         IT = "it"
         OTHERS = "others"
+
     name = models.CharField(max_length=50)
     industry = models.CharField(max_length=15, choices=Industries.choices, default=Industries.OTHERS)
     pay_plan = models.ForeignKey(PayPlan, on_delete=models.DO_NOTHING, null=True)
 
 
-class Users(AbstractUser):
+class Users(models.Model):
+    user = models.OneToOneField(U, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=100, null=True)
-    organization = models.ForeignKey(Organization, on_delete=models.DO_NOTHING, null=True)
+    telegram_username = models.CharField(max_length=100, null=True)
     url_count = models.IntegerField(default=0)
-    telegram_username = models.CharField(max_length=50, default="")
+    organization = models.ForeignKey(Organization, on_delete=models.DO_NOTHING, null=True)
 
 
 class EmailVerification(TimeStampedModel):
@@ -50,6 +56,16 @@ class Categories(TimeStampedModel):
     creator = models.ForeignKey(Users, on_delete=models.CASCADE)
 
 
+def rand_string():
+    str_pool = string.digits + string.ascii_letters
+    return ("".join([random.choice(str_pool) for _ in range(6)])).lower()
+
+
+def rand_letter():
+    str_pool = string.ascii_letters
+    return random.choice(str_pool).lower()
+
+
 class ShortenedUrls(TimeStampedModel):
     class UrlCreatedVia(models.TextChoices):
         WEBSITE = "web"
@@ -60,23 +76,31 @@ class ShortenedUrls(TimeStampedModel):
     prefix = models.CharField(max_length=50, default=rand_letter)
     creator = models.ForeignKey(Users, on_delete=models.CASCADE)
     target_url = models.CharField(max_length=2000)
-    shortened_url = models.CharField(max_length=6, default=rand_string)
-    created_via = models.CharField(max_length=8, choices=UrlCreatedVia.choices, default=UrlCreatedVia.WEBSITE)
-    expired_at = models.DateTimeField(null=True)
     click = models.BigIntegerField(default=0)
+    shortened_url = models.CharField(max_length=6, default=rand_string)
+    create_via = models.CharField(max_length=8, choices=UrlCreatedVia.choices, default=UrlCreatedVia.WEBSITE)
+    expired_at = models.DateTimeField(null=True)
 
     class Meta:
         indexes = [
-            models.Index(fields=["prefix", "shortened_url"])
+            models.Index(
+                fields=[
+                    "prefix",
+                    "shortened_url",
+                ]
+            ),
         ]
 
-    def clicked(self, positive=True):
-        if positive:
-            self.click += 1
-        else:
-            self.click -= 1
+    def clicked(self):
+        self.click += 1
         self.save()
         return self
+
+
+class Schedules(TimeStampedModel):
+    job_name = models.CharField(max_length=50)
+    flag_name = models.CharField(max_length=50)
+    value = models.IntegerField(default=0)
 
 
 class Statistic(TimeStampedModel):
@@ -107,13 +131,16 @@ class Statistic(TimeStampedModel):
         )
         self.device_os = request.user_agent.os.family
         t = TrackingParams.get_tracking_params(url.id)
-        self.custom_params = dict_slice(dict_filter(params, t), 5)
+        if params:
+            self.custom_params = dict_slice(dict_filter(params, t), 5)
+
         try:
             country = location_finder(request)
             self.country_code = country.get("country_code", "XX")
             self.country_name = country.get("country_name", "UNKNOWN")
-        except Exception as e:
-            print(e)
+        except:
+            pass
+
         url.clicked()
         self.save()
 
@@ -123,5 +150,33 @@ class TrackingParams(TimeStampedModel):
     params = models.CharField(max_length=20)
 
     @classmethod
-    def get_tracking_params(cls, shortened_url_id):
+    def get_tracking_params(cls, shortened_url_id:int):
         return TrackingParams.objects.filter(shortened_url_id=shortened_url_id).values_list("params", flat=True)
+
+
+class BackOfficeLogs(TimeStampedModel):
+    endpoint = models.CharField(max_length=2000, blank=True, null=True)
+    body = models.JSONField(null=True)
+    method = models.CharField(max_length=20, blank=True, null=True)
+    user_id = models.IntegerField(blank=True, null=True)
+    ip = models.CharField(max_length=30, blank=True, null=True)
+    status_code = models.IntegerField(blank=True, null=True)
+
+
+class DailyVisitors(models.Model):
+    visit_date = models.DateField()
+    visits = models.IntegerField(default=0)
+    totals = models.IntegerField(default=0)
+    last_updated_on = models.DateTimeField(auto_now=True)
+
+
+class JobInfo(TimeStampedModel):
+    class JOB_STATUS(models.TextChoices):
+        WAIT = "wait"
+        RUN = "run"
+        OK = "ok"
+        ERROR = "error"
+    job_id = models.CharField(max_length=255)
+    user_id = models.IntegerField(null=True)
+    additional_info = models.JSONField(null=True)
+    status = models.CharField(max_length=6, choices=JOB_STATUS.choices, default=JOB_STATUS.WAIT)

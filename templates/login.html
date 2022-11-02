@@ -17,7 +17,7 @@
 
 -->
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 
 <head>
     <meta charset="utf-8">
@@ -51,7 +51,7 @@
                 <div class="row justify-content-center">
                     <div class="col-xl-5 col-lg-6 col-md-8 px-5">
                         <h1 class="text-white">로그인</h1>
-                        <p class="text-lead text-white">shrinker에 오신것을 환영합니다.</p>
+                        <p class="text-lead text-white">Shrinkers에 오신것을 환영합니다.</p>
                     </div>
                 </div>
             </div>
@@ -72,15 +72,13 @@
                         <div class="text-center mt-2 mb-3"><small>소셜로 로그인 하기</small></div>
                         <div class="btn-wrapper text-center">
                             <a href="#" class="btn btn-neutral btn-icon">
-                  <span class="btn-inner--icon">
-                      <img alt="github" src="{% static 'assets/img/icons/common/github.svg' %}">
-                  </span>
+                                <span class="btn-inner--icon"><img
+                                        src="{% static 'assets/img/icons/common/github.svg' %}"></span>
                                 <span class="btn-inner--text">Github</span>
                             </a>
                             <a href="#" class="btn btn-neutral btn-icon">
-                  <span class="btn-inner--icon">
-                      <img alt="google" src="{% static 'assets/img/icons/common/google.svg' %}">
-                  </span>
+                                <span class="btn-inner--icon"><img
+                                        src="{% static 'assets/img/icons/common/google.svg' %}"></span>
                                 <span class="btn-inner--text">Google</span>
                             </a>
                         </div>
@@ -93,8 +91,8 @@
                             <p class="text-center text-sm text-danger">{{ msg }}</p>
                         {% endif %}
                         {% if is_ok or user.is_authenticated %}
-                            <p class="text-center text-sm text-success">로그인 성공({{ user.username }})
-                                <a href="{% url 'logout' %}">로그아웃</a></p>
+                            <p class="text-center text-sm text-success">로그인 성공({{ user.username }}) <a
+                                    class="text-primary" href="{% url 'logout' %}">로그아웃</a></p>
                         {% endif %}
                         <form method="post">
                             {% csrf_token %}
@@ -131,7 +129,7 @@
                         <a href="#" class="text-gray"><small>비밀번호 찾기</small></a>
                     </div>
                     <div class="col-6 text-right">
-                        <a href="{% url "register" %}" class="text-gray"><small>회원가입</small></a>
+                        <a href="{% url 'register' %}" class="text-gray"><small>회원가입</small></a>
                     </div>
                 </div>
             </div>

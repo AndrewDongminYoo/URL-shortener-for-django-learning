@@ -8,14 +8,12 @@ def location_finder(request):
 
 
 def dict_slice(d: Dict, n: int):
-    if type(d) is Dict:
-        return dict(itertools.islice(d.items(), n))
+    return dict(itertools.islice(d.items(), n))
 
 
 def dict_filter(d: Dict, filter_list: List):
     filtered = {}
-    if type(d) is Dict:
-        for k, v in d.items():
-            if k in filter_list:
-                filtered[k] = v
-        return filtered
+    for k, v in d.items():
+        if k in filter_list:
+            filtered[k] = v
+    return filtered
